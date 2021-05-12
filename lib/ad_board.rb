@@ -17,10 +17,14 @@ class AdBoard
 
   def place_ad(ad)
     result = fit_ad(ad)
+
+    puts result
     return 'Can not fit ad in ad board' if result == false
 
     start_with_row(ad) if result == 'start_with_row_can_fit'
     start_with_col(ad) if result == 'start_with_col_can_fit'
+    p @board
+    p @next_row
   end
 
   def remove_ad(ad)
@@ -89,6 +93,8 @@ class AdBoard
         @board[row][col] = ad.ad_id
       end
     end
+
+    @next_row = [ad.ad_rows, ad.ad_cols]
   end
 
   def start_with_col(ad)
@@ -99,6 +105,8 @@ class AdBoard
         @board[row][col] = ad.ad_id
       end
     end
+
+    @next_col = [ad.ad_rows, ad.ad_cols]
   end
 
   def navigate_and_update(origin, rows, cols)
@@ -116,5 +124,8 @@ end
 
 ad_board = AdBoard.new
 ad = Ad.new(3,2,"BW")
-
 ad_board.place_ad(ad)
+
+new_ad = Ad.new(3,2,"BW")
+ad_board.place_ad(ad)
+
