@@ -17,14 +17,14 @@ class AdBoard
 
   def place_ad(ad)
     result = fit_ad(ad)
-
-    puts result
     return 'Can not fit ad in ad board' if result == false
+
+    p "result  =>  #{result}"
 
     start_with_row(ad) if result == 'start_with_row_can_fit'
     start_with_col(ad) if result == 'start_with_col_can_fit'
+
     p @board
-    p @next_row
   end
 
   def remove_ad(ad)
@@ -56,8 +56,8 @@ class AdBoard
 
     row = @next_row[0]
     col = @next_row[1]
-    (row..(ad.ad_rows - 1)).each do |row|
-      (col..(ad.ad_cols - 1)).each do |col|
+    (row..(row + ad.ad_rows - 1)).each do |row|
+      (col..(col + ad.ad_cols - 1)).each do |col|
         if @board[row][col] != 0
           result = false
           break
@@ -73,8 +73,8 @@ class AdBoard
 
     row = @next_col[0]
     col = @next_col[1]
-    (row..(ad.ad_rows - 1)).each do |row|
-      (col..(ad.ad_cols - 1)).each do |col|
+    (row..(row + ad.ad_rows - 1)).each do |row|
+      (col..(col + ad.ad_cols - 1)).each do |col|
         if @board[row][col] != 0
           result = false
           break
@@ -88,32 +88,50 @@ class AdBoard
   def start_with_row(ad)
     row = @next_row[0]
     col = @next_row[1]
-    (row..(ad.ad_rows - 1)).each do |row|
-      (col..(ad.ad_cols - 1)).each do |col|
+
+    (row..(row + ad.ad_rows - 1)).each do |row|
+      (col..(col + ad.ad_cols - 1)).each do |col|
+        p "[#{row}][#{col}]"
         @board[row][col] = ad.ad_id
       end
     end
 
-    @next_row = [ad.ad_rows, ad.ad_cols]
+    find_next_row(ad)
+  end
+
+  def find_next_row(ad)
+    board_size = @board.size
+    row = ad.ad_rows
+    do_break = false
+    (0..(board_size - 1)).each do |row|
+      break if do_break
+      (0..(board_size - 1)).each do |col|
+        if @board[row][col] == 0
+          @next_row = [row, col]
+          do_break = true
+          break
+        end
+      end
+    end
   end
 
   def start_with_col(ad)
     row = @next_col[0]
     col = @next_col[1]
-    (row..(ad.ad_rows - 1)).each do |row|
-      (col..(ad.ad_cols - 1)).each do |col|
+    (row..(row + ad.ad_rows - 1)).each do |row|
+      (col..(col + ad.ad_cols - 1)).each do |col|
         @board[row][col] = ad.ad_id
       end
     end
 
-    @next_col = [ad.ad_rows, ad.ad_cols]
+    find_next_row(ad)
   end
 
   def navigate_and_update(origin, rows, cols)
     row = origin[0]
     col = origin[1]
-    (row..(ad.ad_rows - 1)).each do |row|
-      (col..(ad.ad_cols - 1)).each do |col|
+    (row..(row + ad.ad_rows - 1)).each do |row|
+      (col..(col + ad.ad_cols - 1)).each do |col|
         @board[row][col] = 0
       end
     end    
@@ -123,9 +141,19 @@ end
 
 
 ad_board = AdBoard.new
-ad = Ad.new(3,2,"BW")
+
+ad = Ad.new(3,3,"BW")
 ad_board.place_ad(ad)
 
-new_ad = Ad.new(3,2,"BW")
+ad = Ad.new(3,3,"BW")
+ad_board.place_ad(ad)
+
+ad = Ad.new(3,3,"BW")
+ad_board.place_ad(ad)
+
+ad = Ad.new(3,3,"BW")
+ad_board.place_ad(ad)
+
+ad = Ad.new(3,3,"BW")
 ad_board.place_ad(ad)
 
